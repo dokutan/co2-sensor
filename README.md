@@ -15,5 +15,9 @@ This python script is a small web server that reads the sensor data over the ser
 ## Prometheus config
 
 ```
-TODO!
+scrape_configs:
+  - job_name: sensors
+    scrape_interval: 100s
+    static_configs:
+      - targets: ['localhost:8044']
 ```
