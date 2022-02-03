@@ -4,6 +4,7 @@ import threading
 import serial
 import sys
 
+port = 8044
 sensor_labels = dict({
     "scd30_co2_ppm": "# HELP scd30_co2_ppm The CO2 concentration in ppm.\n",
     "scd30_humidity_percent": "# HELP scd30_humidity_percent The realtive humidity in %.\n",
@@ -26,7 +27,7 @@ def serve():
             self.end_headers()
             self.wfile.write(bytes(message, "utf8"))
 
-    with HTTPServer(('', 8000), handler) as server:
+    with HTTPServer(('', port), handler) as server:
         server.serve_forever()
 
 def update():

@@ -1,0 +1,9 @@
+[Unit]
+Description=CO2 sensor bridge
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/python3 /absolute/path/to/sensor-bridge.py /dev/serial/by-id/...
+
+[Install]
+WantedBy=multi-user.target
