@@ -26,10 +26,10 @@ def serve():
         def do_GET(self):
             message = ""
             for k, v in sensor_values.items():
-                message = message + sensor_labels[k] + str(k) + " " + str(v)
+                message = message + sensor_labels[k] + str(k) + " " + str(v) + "\n"
 
             self.send_response(200)
-            self.send_header('Content-type','text/html')
+            self.send_header('Content-type','text/plain')
             self.end_headers()
             self.wfile.write(bytes(message, "utf8"))
 
@@ -41,22 +41,22 @@ def update():
         global sensor_values
         line = serialport.readline().decode()
         if line != "":
-            kv = line.split(" ")
+            kv = line.replace("\n", "").replace("\r", "").split(" ")
             sensor_values[kv[0]] = kv[1]
 
-def publish():
+def publish_mqtt():
     while True:
         time.sleep(mqtt_sleep)
-        message = "{"
+        message = "{ "
         for k, v in sensor_values.items():
-            message += "\"" + str(k) + "\": " + str(v) + ","
-        message = message[0:-1]
-        message += "}"
+            message += "\"" + str(k) + "\": " + str(v) + ", "
+        message = message[0:-2]
+        message += " }"
         publish.single(mqtt_topic, message, hostname=mqtt_host, port=mqtt_port)
 
 t1 = threading.Thread(target=serve)
 t2 = threading.Thread(target=update)
-t3 = threading.Thread(target=publish)
+t3 = threading.Thread(target=publish_mqtt)
 
 t1.start()
 t2.start()
