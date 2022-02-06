@@ -1,10 +1,16 @@
 #!/usr/bin/env python3
 from http.server import BaseHTTPRequestHandler, HTTPServer
+import paho.mqtt.publish as publish
 import threading
 import serial
 import sys
+import time
 
-port = 8044
+mqtt_host = "localhost"
+mqtt_topic = "co2-sensor"
+mqtt_port = 1883
+mqtt_sleep = 60
+http_port = 8044
 sensor_labels = dict({
     "scd30_co2_ppm": "# HELP scd30_co2_ppm The CO2 concentration in ppm.\n",
     "scd30_humidity_percent": "# HELP scd30_humidity_percent The realtive humidity in %.\n",
@@ -27,7 +33,7 @@ def serve():
             self.end_headers()
             self.wfile.write(bytes(message, "utf8"))
 
-    with HTTPServer(('', port), handler) as server:
+    with HTTPServer(('', http_port), handler) as server:
         server.serve_forever()
 
 def update():
@@ -38,11 +44,24 @@ def update():
             kv = line.split(" ")
             sensor_values[kv[0]] = kv[1]
 
+def publish():
+    while True:
+        time.sleep(mqtt_sleep)
+        message = "{"
+        for k, v in sensor_values.items():
+            message += "\"" + str(k) + "\": " + str(v) + ","
+        message = message[0:-1]
+        message += "}"
+        publish.single(mqtt_topic, message, hostname=mqtt_host, port=mqtt_port)
+
 t1 = threading.Thread(target=serve)
 t2 = threading.Thread(target=update)
+t3 = threading.Thread(target=publish)
 
 t1.start()
 t2.start()
+t3.start()
 
 t1.join()
 t2.join()
+t3.join()
