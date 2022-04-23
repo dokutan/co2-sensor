@@ -5,6 +5,7 @@ import threading
 import serial
 import sys
 import time
+import socket
 
 mqtt_host = "localhost"
 mqtt_topic = "co2-sensor"
@@ -33,7 +34,10 @@ def serve():
             self.end_headers()
             self.wfile.write(bytes(message, "utf8"))
 
-    with HTTPServer(('', http_port), handler) as server:
+    class HTTPServerV6(HTTPServer):
+        address_family = socket.AF_INET6
+
+    with HTTPServerV6(('::', http_port), handler) as server:
         server.serve_forever()
 
 def update():
