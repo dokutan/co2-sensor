@@ -6,6 +6,7 @@ import serial
 import sys
 import time
 import socket
+import re
 
 mqtt_host = "localhost"
 mqtt_topic = "co2-sensor"
@@ -26,13 +27,25 @@ def serve():
     class handler(BaseHTTPRequestHandler):
         def do_GET(self):
             message = ""
-            for k, v in sensor_values.items():
-                message = message + sensor_labels[k] + str(k) + " " + str(v) + "\n"
+            ok = True
 
-            self.send_response(200)
-            self.send_header('Content-type','text/plain')
-            self.end_headers()
-            self.wfile.write(bytes(message, "utf8"))
+            if re.match("/values/.+", self.path):
+                sensor = self.path.split("/")[-1]
+                if sensor in sensor_values:
+                    message = sensor_values[sensor] + "\n"
+                else:
+                    ok = False
+            else:
+                for k, v in sensor_values.items():
+                    message = message + sensor_labels[k] + str(k) + " " + str(v) + "\n"
+
+            if ok:
+                self.send_response(200)
+                self.send_header('Content-type','text/plain')
+                self.end_headers()
+                self.wfile.write(bytes(message, "utf8"))
+            else:
+                self.send_response(404)
 
     class HTTPServerV6(HTTPServer):
         address_family = socket.AF_INET6
