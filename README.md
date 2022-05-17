@@ -20,6 +20,7 @@ go mod download github.com/gorilla/websocket
 go mod download go.rbn.im/neinp
 go mod download golang.org/x/net
 go build sensorfs.go
+./sensorfs -h # shows usage
 ```
 
 ## Prometheus config

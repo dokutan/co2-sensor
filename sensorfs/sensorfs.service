@@ -1,0 +1,9 @@
+[Unit]
+Description=CO2 sensor fs
+After=network.target
+
+[Service]
+ExecStart=/absolute/path/to/sensorfs options...
+
+[Install]
+WantedBy=multi-user.target
