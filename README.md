@@ -13,6 +13,7 @@ The sensors are connected to the Arduino using I²C.
 This python script is a small web server that reads the sensor data over the serial connection to make it available to Prometheus. Additionally the sensor values are published to a MQTT broker.
 
 ## sensorfs
+This is a 9P server that makes the sensor values available as a filesystem. The values are received over MQTT. 
 ```
 cd sensorfs
 go mod download github.com/eclipse/paho.mqtt.golang
@@ -21,6 +22,14 @@ go mod download go.rbn.im/neinp
 go mod download golang.org/x/net
 go build sensorfs.go
 ./sensorfs -h # shows usage
+```
+
+Mount the filesystem:
+```
+sudo modprobe 9p-tcp
+sudo mount -t 9p <ip> mnt -o version=9p2000,port=5644,trans=tcp
+# or
+9pfuse <host>:5644 mnt
 ```
 
 ## Prometheus config

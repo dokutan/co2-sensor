@@ -1,0 +1,22 @@
+digraph {
+	subgraph "clusterArduino" {
+		"BMP280" -> "Arduino" [label="I2C"];
+		"SCD30" -> "Arduino" [label="I2C"];
+	}
+	"Arduino" -> "sensor-bridge.py" [label="serial over USB"];
+
+	subgraph "clusterMQTT" {	
+		"MQTT Broker" -> "Home Assistant" [label="MQTT"];
+	}
+	"sensor-bridge.py" -> "MQTT Broker" [label="MQTT"];
+
+	subgraph "clusterHTTP" {
+		"Prometheus" -> "Grafana";
+	}
+	"sensor-bridge.py" -> "Prometheus" [label="HTTP"];
+
+	subgraph "cluster9P" {
+		"MQTT Broker" -> "sensorfs" [label="MQTT"];
+		"sensorfs" -> "9P client" [label="9P"];
+	}
+}
