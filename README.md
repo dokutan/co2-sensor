@@ -12,6 +12,16 @@ The sensors are connected to the Arduino using I²C.
 ## sensor-bridge
 This python script is a small web server that reads the sensor data over the serial connection to make it available to Prometheus. Additionally the sensor values are published to a MQTT broker.
 
+## sensorfs
+```
+cd sensorfs
+go mod download github.com/eclipse/paho.mqtt.golang
+go mod download github.com/gorilla/websocket
+go mod download go.rbn.im/neinp
+go mod download golang.org/x/net
+go build sensorfs.go
+```
+
 ## Prometheus config
 
 ```
