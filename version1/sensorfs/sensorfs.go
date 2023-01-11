@@ -105,7 +105,7 @@ func main() {
 
 		s := neinp.NewServer(r)
 		s.Debug = *debug9
-		s.Serve(conn)
+		go s.Serve(conn)
 	}
 }
 
