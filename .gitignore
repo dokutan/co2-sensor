@@ -1,2 +1,3 @@
-*/go.sum
-sensorfs/sensorfs
+**/go.sum
+*/sensorfs/sensorfs
+**/schematic

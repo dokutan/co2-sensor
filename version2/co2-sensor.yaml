@@ -1,0 +1,85 @@
+esphome:
+  name: co2-sensor
+
+esp32:
+  board: esp32dev
+  framework:
+    type: arduino
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  password: ""
+
+ota:
+  password: ""
+
+# WiFi connection
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+# web server
+web_server:
+  port: 80
+  local: true
+
+# prometheus endpoint
+prometheus:
+
+# I2C bus
+i2c:
+  sda: GPIO18
+  scl: GPIO19
+  scan: true
+
+sensor:
+  # SCD30 CO2 sensor
+  - platform: scd30
+    co2:
+      name: "SCD30 CO2"
+      accuracy_decimals: 1
+    temperature:
+      name: "SCD30 Temperature"
+      accuracy_decimals: 2
+    humidity:
+      name: "SCD30 Humidity"
+      accuracy_decimals: 1
+    temperature_offset: 1.5 °C
+    address: 0x61
+    update_interval: 60s
+
+  # BMP280 pressure + temperature sensor
+  - platform: bmp280
+    temperature:
+      name: "BMP280 Temperature"
+    pressure:
+      name: "BMP280 Pressure"
+    address: 0x76
+    update_interval: 60s
+
+  # BH1750 light sensor
+  - platform: bh1750
+    name: "BH1750 Illuminance"
+    address: 0x23
+    update_interval: 60s
+
+  # DHT11 temperature + humidity sensor
+  - platform: dht
+    pin: GPIO21
+    temperature:
+      name: "DHT11 Temperature"
+    humidity:
+      name: "DHT11 Humidity"
+    update_interval: 60s
+
+# WS2812B RGB LED
+#light:
+#  - platform: fastled_clockless
+#    chipset: WS2812B
+#    pin: GPIO23
+#    num_leds: 1
+#    rgb_order: GRB
+#    name: "WS2812B LED"
