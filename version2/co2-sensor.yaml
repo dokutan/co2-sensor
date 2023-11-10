@@ -4,7 +4,8 @@ esphome:
 esp32:
   board: esp32dev
   framework:
-    type: arduino
+#    type: arduino
+    type: esp-idf
 
 # Enable logging
 logger:
@@ -20,6 +21,9 @@ ota:
 wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_password
+
+network:
+  enable_ipv6: true
 
 # web server
 web_server:
