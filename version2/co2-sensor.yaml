@@ -14,9 +14,6 @@ logger:
 api:
   password: ""
 
-ota:
-  password: ""
-
 # WiFi connection
 wifi:
   ssid: !secret wifi_ssid
@@ -56,7 +53,7 @@ sensor:
     update_interval: 60s
 
   # BMP280 pressure + temperature sensor
-  - platform: bmp280
+  - platform: bmp280_i2c
     temperature:
       name: "BMP280 Temperature"
     pressure:
